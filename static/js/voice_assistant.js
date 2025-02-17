@@ -5,13 +5,28 @@ class VoiceAssistant {
         this.waveform = document.getElementById('waveform');
         this.conversationBox = document.getElementById('conversationBox');
         this.errorAlert = document.getElementById('errorAlert');
-        
+
         this.recognition = null;
         this.isListening = false;
         this.synthesis = window.speechSynthesis;
-        
+
         this.initializeSpeechRecognition();
         this.setupEventListeners();
+
+        // Initialize voices
+        this.voices = [];
+        this.selectedVoice = null;
+        this.loadVoices();
+
+        // Handle voice loading
+        speechSynthesis.onvoiceschanged = () => this.loadVoices();
+    }
+
+    loadVoices() {
+        this.voices = this.synthesis.getVoices();
+        // Try to find a female English voice
+        this.selectedVoice = this.voices.find(voice => 
+            voice.lang.includes('en') && voice.name.includes('Female')) || this.voices[0];
     }
 
     initializeSpeechRecognition() {
@@ -20,7 +35,7 @@ class VoiceAssistant {
             this.recognition.continuous = false;
             this.recognition.interimResults = false;
             this.recognition.lang = 'en-US';
-            
+
             this.setupRecognitionEvents();
         } else {
             this.showError('Speech recognition is not supported in this browser.');
@@ -88,7 +103,7 @@ class VoiceAssistant {
 
     async processVoiceInput(transcript) {
         this.addMessageToConversation('user', transcript);
-        
+
         try {
             const response = await fetch('/process-voice', {
                 method: 'POST',
@@ -119,15 +134,21 @@ class VoiceAssistant {
         const messageElement = document.createElement('p');
         messageElement.className = `${role}-message`;
         messageElement.textContent = `${role === 'user' ? '👤' : '🤖'} ${message}`;
-        
+
         this.conversationBox.appendChild(messageElement);
         this.conversationBox.scrollTop = this.conversationBox.scrollHeight;
     }
 
     speakResponse(text) {
+        // Cancel any ongoing speech
+        this.synthesis.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = this.selectedVoice;
         utterance.rate = 1;
         utterance.pitch = 1;
+        utterance.volume = 1;
+
         this.synthesis.speak(utterance);
     }
 

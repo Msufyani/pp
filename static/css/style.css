@@ -1,6 +1,10 @@
 .mic-container {
     position: relative;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #micButton {
@@ -10,6 +14,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto;
 }
 
 #micButton i {
@@ -36,6 +41,8 @@
 .status-text {
     font-size: 0.9rem;
     color: var(--bs-secondary);
+    text-align: center;
+    margin-top: 10px;
 }
 
 .wave-container {
