@@ -1,3 +1,8 @@
+.custom-bg {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+}
+
 .mic-container {
     position: relative;
     padding: 20px;
@@ -19,8 +24,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-#micButton i {
-    font-size: 1.5rem;
+.mic-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--bs-secondary);
 }
 
 #micButton:hover {
@@ -40,7 +47,7 @@
     100% { transform: scale(1); }
 }
 
-#micButton.recording .fa-microphone {
+#micButton.recording .mic-icon {
     display: none;
 }
 
@@ -124,7 +131,7 @@
 .card {
     border: none;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(145deg, var(--bs-dark) 0%, var(--bs-dark) 100%);
+    background: linear-gradient(145deg, #1f1f3a 0%, #2a2a4a 100%);
 }
 
 .card-body {

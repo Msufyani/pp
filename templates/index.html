@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Assistant</title>
+    <title>Echo - Your Smart Voice Companion</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="custom-bg">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -16,12 +16,13 @@
                     <div class="card-body text-center">
                         <h1 class="card-title mb-4">
                             <i class="fas fa-robot me-2"></i>
-                            AI Voice Assistant
+                            Echo
                         </h1>
+                        <p class="text-muted mb-4">Your Smart Voice Companion</p>
 
                         <div class="mic-container mb-4">
                             <button id="micButton" class="btn btn-lg btn-outline-secondary rounded-circle">
-                                <i class="fas fa-microphone"></i>
+                                <img src="{{ url_for('static', filename='images/microphone.svg') }}" alt="Microphone" class="mic-icon">
                                 <i class="fas fa-stop d-none"></i>
                             </button>
                             <div id="voiceStatus" class="status-text mt-2">Click to start speaking</div>
