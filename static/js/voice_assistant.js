@@ -25,9 +25,9 @@ class VoiceAssistant {
     loadVoices() {
         this.voices = this.synthesis.getVoices();
         // Try to find a clear, professional English voice
-        this.selectedVoice = this.voices.find(voice => 
-            voice.lang.includes('en-GB') && voice.name.includes('Male')) || 
-            this.voices.find(voice => voice.lang.includes('en-US') && !voice.name.includes('Female')) || 
+        this.selectedVoice = this.voices.find(voice =>
+            voice.lang.includes('en-GB') && voice.name.includes('Male')) ||
+            this.voices.find(voice => voice.lang.includes('en-US') && !voice.name.includes('Female')) ||
             this.voices[0];
     }
 
@@ -155,11 +155,24 @@ class VoiceAssistant {
             // Cancel any ongoing speech
             this.synthesis.cancel();
 
-            const utterance = new SpeechSynthesisUtterance(text.trim());
+            // Clean up text by removing special characters and normalizing punctuation
+            const cleanText = text.trim()
+                .replace(/[!?]+/g, '.') // Replace multiple exclamation/question marks with period
+                .replace(/\.+/g, '.') // Replace multiple periods with single one
+                .replace(/\s+/g, ' '); // Normalize spaces
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+
+            // Try to find a clear, natural-sounding voice
+            if (!this.selectedVoice) {
+                this.loadVoices();
+            }
             utterance.voice = this.selectedVoice;
-            utterance.rate = 0.95;
-            utterance.pitch = 1.05;
-            utterance.volume = 1;
+
+            // Adjust speech parameters for more natural sound
+            utterance.rate = 1.1;      // Slightly faster than default
+            utterance.pitch = 1.0;     // Natural pitch
+            utterance.volume = 1;      // Full volume
 
             utterance.onend = () => {
                 resolve();
