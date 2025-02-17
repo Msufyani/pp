@@ -142,17 +142,45 @@ class VoiceAssistant {
     }
 
     speakResponse(text) {
-        // Cancel any ongoing speech
-        this.synthesis.cancel();
+        // Break long responses into smaller chunks
+        const chunks = this.chunkText(text);
+        this.speakChunks(chunks);
+    }
 
-        // Clean up text by removing punctuation and special characters
-        const cleanText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ");
+    chunkText(text) {
+        // Split text into sentences
+        const sentences = text.split(/[.!?]+/);
+        const chunks = [];
+        let currentChunk = '';
 
-        const utterance = new SpeechSynthesisUtterance(cleanText);
+        for (let sentence of sentences) {
+            if (sentence.trim()) {
+                if (currentChunk.length + sentence.length < 200) {
+                    currentChunk += sentence.trim() + '. ';
+                } else {
+                    chunks.push(currentChunk);
+                    currentChunk = sentence.trim() + '. ';
+                }
+            }
+        }
+        if (currentChunk) {
+            chunks.push(currentChunk);
+        }
+        return chunks;
+    }
+
+    speakChunks(chunks, index = 0) {
+        if (index >= chunks.length) return;
+
+        const utterance = new SpeechSynthesisUtterance(chunks[index]);
         utterance.voice = this.selectedVoice;
-        utterance.rate = 0.95; // Slightly slower for better clarity
-        utterance.pitch = 1.05; // Slightly higher pitch for more engaging tone
+        utterance.rate = 0.95;
+        utterance.pitch = 1.05;
         utterance.volume = 1;
+
+        utterance.onend = () => {
+            this.speakChunks(chunks, index + 1);
+        };
 
         this.synthesis.speak(utterance);
     }

@@ -3,6 +3,18 @@
     min-height: 100vh;
 }
 
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+}
+
 .mic-container {
     position: relative;
     padding: 20px;
