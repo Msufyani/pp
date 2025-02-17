@@ -11,7 +11,11 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
 
 # Initialize Gemini API
-genai.configure(api_key="AIzaSyAbxt0_DtgHuQCQUvnw5Flo_8MZqyrZhOE")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable is not set")
+
+genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
 @app.route('/')
