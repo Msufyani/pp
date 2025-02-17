@@ -125,7 +125,7 @@ class VoiceAssistant {
             }
 
             this.addMessageToConversation('assistant', data.response);
-            this.speakResponse(data.response);
+            await this.speakResponse(data.response);
 
         } catch (error) {
             this.showError(error.message);
@@ -141,48 +141,37 @@ class VoiceAssistant {
         this.conversationBox.scrollTop = this.conversationBox.scrollHeight;
     }
 
-    speakResponse(text) {
-        // Break long responses into smaller chunks
-        const chunks = this.chunkText(text);
-        this.speakChunks(chunks);
-    }
-
-    chunkText(text) {
-        // Split text into sentences
-        const sentences = text.split(/[.!?]+/);
-        const chunks = [];
-        let currentChunk = '';
+    async speakResponse(text) {
+        // Split text into sentences for better speech synthesis
+        const sentences = text.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0);
 
         for (let sentence of sentences) {
-            if (sentence.trim()) {
-                if (currentChunk.length + sentence.length < 200) {
-                    currentChunk += sentence.trim() + '. ';
-                } else {
-                    chunks.push(currentChunk);
-                    currentChunk = sentence.trim() + '. ';
-                }
-            }
+            await this.speakSentence(sentence);
         }
-        if (currentChunk) {
-            chunks.push(currentChunk);
-        }
-        return chunks;
     }
 
-    speakChunks(chunks, index = 0) {
-        if (index >= chunks.length) return;
+    speakSentence(text) {
+        return new Promise((resolve) => {
+            // Cancel any ongoing speech
+            this.synthesis.cancel();
 
-        const utterance = new SpeechSynthesisUtterance(chunks[index]);
-        utterance.voice = this.selectedVoice;
-        utterance.rate = 0.95;
-        utterance.pitch = 1.05;
-        utterance.volume = 1;
+            const utterance = new SpeechSynthesisUtterance(text.trim());
+            utterance.voice = this.selectedVoice;
+            utterance.rate = 0.95;
+            utterance.pitch = 1.05;
+            utterance.volume = 1;
 
-        utterance.onend = () => {
-            this.speakChunks(chunks, index + 1);
-        };
+            utterance.onend = () => {
+                resolve();
+            };
 
-        this.synthesis.speak(utterance);
+            utterance.onerror = (error) => {
+                console.error('Speech synthesis error:', error);
+                resolve();
+            };
+
+            this.synthesis.speak(utterance);
+        });
     }
 
     showError(message) {
