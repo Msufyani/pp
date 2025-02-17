@@ -1,7 +1,7 @@
 import os
 import logging
+import google.generativeai as genai
 from flask import Flask, render_template, request, jsonify
-from openai import OpenAI
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -10,10 +10,9 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
 
-# Initialize OpenAI client
-# the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-# do not change this unless explicitly requested by the user
-openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Initialize Gemini API
+genai.configure(api_key="AIzaSyAbxt0_DtgHuQCQUvnw5Flo_8MZqyrZhOE")
+model = genai.GenerativeModel('gemini-pro')
 
 @app.route('/')
 def index():
@@ -24,21 +23,16 @@ def process_voice():
     try:
         data = request.json
         user_input = data.get('text', '')
-        
+
         if not user_input:
             return jsonify({'error': 'No input provided'}), 400
 
-        # Generate AI response using OpenAI
-        response = openai.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a helpful voice assistant. Keep responses concise and natural."},
-                {"role": "user", "content": user_input}
-            ],
-            max_tokens=150
+        # Generate AI response using Gemini
+        response = model.generate_content(
+            "You are a helpful voice assistant. Keep responses concise and natural. User says: " + user_input
         )
 
-        ai_response = response.choices[0].message.content
+        ai_response = response.text
         return jsonify({'response': ai_response})
 
     except Exception as e:

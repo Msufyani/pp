@@ -7,6 +7,13 @@
     width: 80px;
     height: 80px;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#micButton i {
+    font-size: 1.5rem;
 }
 
 #micButton:hover {
@@ -16,6 +23,14 @@
 #micButton.recording {
     background-color: var(--bs-danger);
     color: white;
+}
+
+#micButton.recording .fa-microphone {
+    display: none;
+}
+
+#micButton.recording .fa-stop {
+    display: inline-block !important;
 }
 
 .status-text {
