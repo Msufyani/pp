@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Assistant</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h1 class="card-title mb-4">AI Voice Assistant</h1>
+                        
+                        <div class="mic-container mb-4">
+                            <button id="micButton" class="btn btn-lg btn-outline-secondary rounded-circle">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <div id="voiceStatus" class="status-text mt-2">Click to start speaking</div>
+                        </div>
+
+                        <div id="waveform" class="wave-container mb-4">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+
+                        <div class="conversation-container">
+                            <div id="conversationBox" class="conversation-box mb-3">
+                                <p class="text-muted">Your conversation will appear here...</p>
+                            </div>
+                        </div>
+
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/voice_assistant.js') }}"></script>
+</body>
+</html>
