@@ -24,9 +24,11 @@ class VoiceAssistant {
 
     loadVoices() {
         this.voices = this.synthesis.getVoices();
-        // Try to find a female English voice
+        // Try to find a male English voice for variety
         this.selectedVoice = this.voices.find(voice => 
-            voice.lang.includes('en') && voice.name.includes('Female')) || this.voices[0];
+            voice.lang.includes('en-US') && voice.name.includes('Male')) || 
+            this.voices.find(voice => voice.lang.includes('en-US')) || 
+            this.voices[0];
     }
 
     initializeSpeechRecognition() {
@@ -143,10 +145,13 @@ class VoiceAssistant {
         // Cancel any ongoing speech
         this.synthesis.cancel();
 
-        const utterance = new SpeechSynthesisUtterance(text);
+        // Clean up text by removing punctuation and special characters
+        const cleanText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.voice = this.selectedVoice;
-        utterance.rate = 1;
-        utterance.pitch = 1;
+        utterance.rate = 0.9; // Slightly slower for better clarity
+        utterance.pitch = 1.1; // Slightly higher pitch
         utterance.volume = 1;
 
         this.synthesis.speak(utterance);
